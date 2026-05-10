@@ -1,8 +1,7 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   output: 'export',
-  basePath: '/nempSolutions', // Adjust if using a custom domain or different repo name
+  basePath: '/nempSolutions',
   images: {
     unoptimized: true,
     remotePatterns: [
