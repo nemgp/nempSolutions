@@ -1,6 +1,20 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder-url.supabase.co';
+let envUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+if (envUrl && !envUrl.startsWith('http')) {
+  envUrl = `https://${envUrl}`;
+}
+
+// Validation de l'URL pour éviter le plantage au build
+let finalUrl = 'https://placeholder-url.supabase.co';
+try {
+  new URL(envUrl);
+  finalUrl = envUrl || finalUrl;
+} catch (e) {
+  console.warn('URL Supabase invalide ignorée:', envUrl);
+}
+
+const supabaseUrl = finalUrl;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-key';
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
