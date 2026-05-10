@@ -5,11 +5,13 @@ if (envUrl && !envUrl.startsWith('http')) {
   envUrl = `https://${envUrl}`;
 }
 
-// Validation de l'URL pour éviter le plantage au build
+// Validation et nettoyage de l'URL pour éviter les erreurs de path
 let finalUrl = 'https://placeholder-url.supabase.co';
 try {
-  new URL(envUrl);
-  finalUrl = envUrl || finalUrl;
+  if (envUrl) {
+    const urlObj = new URL(envUrl);
+    finalUrl = urlObj.origin; // Garde uniquement protocole + domaine (ex: https://xyz.supabase.co)
+  }
 } catch (e) {
   console.warn('URL Supabase invalide ignorée:', envUrl);
 }
