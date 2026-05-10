@@ -1,14 +1,20 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { Mail } from 'lucide-react';
 
 export default function Navbar() {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 px-6 py-4">
       <div className="max-w-7xl mx-auto flex items-center justify-between bg-white/70 backdrop-blur-md px-8 py-3 rounded-full border border-white/40 shadow-sm">
-        <Link href="/" className="text-xl font-black tracking-tighter text-anthracite">
-          nemgp<span className="text-accent">Solutions</span>
+        <Link href="/" className="flex items-center gap-3">
+          <div className="relative w-10 h-10">
+            <Image src="/nempSolutions/logo.png" alt="nemgpSolutions" fill className="object-contain" />
+          </div>
+          <span className="text-xl font-black tracking-tighter text-anthracite">
+            nemgp<span className="text-accent">Solutions</span>
+          </span>
         </Link>
 
         <div className="hidden md:flex items-center gap-10">

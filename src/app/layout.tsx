@@ -15,6 +15,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "nemgpSolutions | IA & Consulting Logiciel",
   description: "Plateforme de solutions logicielles innovantes combinant intelligence artificielle et conseil stratégique.",
+  icons: {
+    icon: "/nempSolutions/logo.png",
+  },
 };
 
 export default function RootLayout({
