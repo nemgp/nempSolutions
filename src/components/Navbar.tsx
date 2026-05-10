@@ -18,7 +18,7 @@ export default function Navbar() {
         </div>
 
         <Link 
-          href="mailto:contact@nemgp.com"
+          href="mailto:mnguemkam.polytechvalor@gmail.com"
           className="bg-accent text-white px-6 py-2.5 rounded-full text-sm font-bold shadow-lg shadow-accent/20 hover:scale-105 active:scale-95 transition-all flex items-center gap-2"
         >
           Contact

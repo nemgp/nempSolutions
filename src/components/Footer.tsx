@@ -12,7 +12,7 @@ export default function Footer() {
         <div className="flex gap-8 text-sm font-medium text-gray-500">
           <Link href="/mentions-legales" className="hover:text-accent transition-colors">Mentions Légales</Link>
           <Link href="/confidentialite" className="hover:text-accent transition-colors">Confidentialité</Link>
-          <Link href="/contact" className="hover:text-accent transition-colors">Contact</Link>
+          <Link href="mailto:mnguemkam.polytechvalor@gmail.com" className="hover:text-accent transition-colors">Contact</Link>
         </div>
       </div>
 
