@@ -2,7 +2,7 @@ import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
 import ProjectCard from '@/components/ProjectCard';
 import Footer from '@/components/Footer';
-import { supabase, type Project } from '@/lib/supabase';
+import { getProjects, type Project } from '@/lib/google';
 
 // Mock data for initial preview if Supabase is not connected
 const mockProjects: Project[] = [
@@ -35,19 +35,16 @@ const mockProjects: Project[] = [
   }
 ];
 
-async function getProjects(): Promise<Project[]> {
+async function fetchProjectsWithFallback(): Promise<Project[]> {
   try {
-    const { data, error } = await supabase
-      .from('projects')
-      .select('*')
-      .order('created_at', { ascending: false });
+    const data = await getProjects();
     
-    if (error || !data || data.length === 0) {
-      console.warn('Supabase fetch failed or empty, using mock data:', error);
+    if (!data || data.length === 0) {
+      console.warn('Google Sheets fetch empty, using mock data');
       return mockProjects;
     }
     
-    return data as Project[];
+    return data;
   } catch (err) {
     console.error('Error fetching projects:', err);
     return mockProjects;
@@ -55,7 +52,7 @@ async function getProjects(): Promise<Project[]> {
 }
 
 export default async function Home() {
-  const projects = await getProjects();
+  const projects = await fetchProjectsWithFallback();
 
   return (
     <main className="min-h-screen">

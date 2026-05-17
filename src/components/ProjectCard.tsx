@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { ExternalLink } from 'lucide-react';
 import Image from 'next/image';
 import Badge from './Badge';
-import { Project } from '@/lib/supabase';
+import { Project } from '@/lib/google';
 
 interface ProjectCardProps {
   project: Project;
