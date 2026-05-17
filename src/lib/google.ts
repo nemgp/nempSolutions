@@ -8,19 +8,19 @@ export type Project = {
   created_at: string;
 };
 
-const APPS_SCRIPT_URL = process.env.APPS_SCRIPT_URL;
+// Use NEXT_PUBLIC_ so it's available in the browser for static export
+const APPS_SCRIPT_URL = process.env.NEXT_PUBLIC_APPS_SCRIPT_URL;
 
 export async function getProjects(): Promise<Project[]> {
   try {
     if (!APPS_SCRIPT_URL) {
-      console.warn("APPS_SCRIPT_URL is missing. Please add it to your .env.local");
+      console.warn("NEXT_PUBLIC_APPS_SCRIPT_URL is missing.");
       return [];
     }
 
-    // Pass the action 'GET' in query param or rely on HTTP GET
     const response = await fetch(`${APPS_SCRIPT_URL}?action=get`, {
       method: 'GET',
-      next: { revalidate: 0 } // Disable caching to always get fresh data
+      next: { revalidate: 0 }
     });
 
     if (!response.ok) {
@@ -35,9 +35,9 @@ export async function getProjects(): Promise<Project[]> {
   }
 }
 
-export async function addProject(project: Omit<Project, 'id' | 'created_at'>) {
+export async function addProject(project: Omit<Project, 'id' | 'created_at'>, adminPassword?: string) {
   try {
-    if (!APPS_SCRIPT_URL) throw new Error("APPS_SCRIPT_URL is missing");
+    if (!APPS_SCRIPT_URL) throw new Error("NEXT_PUBLIC_APPS_SCRIPT_URL is missing");
 
     const id = crypto.randomUUID();
     const created_at = new Date().toISOString();
@@ -55,21 +55,22 @@ export async function addProject(project: Omit<Project, 'id' | 'created_at'>) {
       },
       body: JSON.stringify({
         action: 'add',
-        project: newProject
+        project: newProject,
+        password: adminPassword || ''
       }),
     });
 
     const result = await response.json();
-    return { success: result.success };
-  } catch (error) {
+    return { success: result.success, error: result.error };
+  } catch (error: any) {
     console.error('Error adding project via Apps Script:', error);
-    return { success: false, error };
+    return { success: false, error: error.message };
   }
 }
 
-export async function deleteProject(id: string) {
+export async function deleteProject(id: string, adminPassword?: string) {
   try {
-    if (!APPS_SCRIPT_URL) throw new Error("APPS_SCRIPT_URL is missing");
+    if (!APPS_SCRIPT_URL) throw new Error("NEXT_PUBLIC_APPS_SCRIPT_URL is missing");
 
     const response = await fetch(APPS_SCRIPT_URL, {
       method: 'POST',
@@ -78,14 +79,15 @@ export async function deleteProject(id: string) {
       },
       body: JSON.stringify({
         action: 'delete',
-        id: id
+        id: id,
+        password: adminPassword || ''
       }),
     });
 
     const result = await response.json();
-    return { success: result.success };
-  } catch (error) {
+    return { success: result.success, error: result.error };
+  } catch (error: any) {
     console.error('Error deleting project via Apps Script:', error);
-    return { success: false, error };
+    return { success: false, error: error.message };
   }
 }

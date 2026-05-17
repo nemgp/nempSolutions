@@ -1,27 +1,21 @@
 'use client';
 
-import { loginAction } from '../actions';
 import { Lock } from 'lucide-react';
-import { useActionState } from 'react';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function AdminLogin() {
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [password, setPassword] = useState('');
+  const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setLoading(true);
-    setError(null);
-    const formData = new FormData(e.currentTarget);
-    try {
-      // Because server actions throwing an error might be tricky to catch nicely 
-      // without useActionState, let's just await it.
-      await loginAction(formData);
-    } catch (err: any) {
-      setError(err.message || "Erreur de connexion");
-      setLoading(false);
-    }
+    if (password.trim() === '') return;
+    
+    // Pour les sites statiques (GitHub Pages), on sauvegarde le mot de passe côté client
+    // et on le renvoie à l'Apps Script pour chaque action.
+    localStorage.setItem('admin_password', password);
+    router.push('/admin');
   };
 
   return (
@@ -35,20 +29,15 @@ export default function AdminLogin() {
         
         <h1 className="text-2xl font-black text-center mb-2">Accès <span className="text-accent">Admin</span></h1>
         <p className="text-muted text-center mb-8 text-sm text-gray-500">
-          Veuillez entrer votre mot de passe pour accéder au dashboard.
+          Veuillez entrer le mot de passe pour accéder au dashboard.
         </p>
-
-        {error && (
-          <div className="bg-red-50 text-red-500 text-sm p-3 rounded-xl mb-4 text-center">
-            {error}
-          </div>
-        )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <input
               type="password"
-              name="password"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
               placeholder="Mot de passe"
               className="w-full px-4 py-3 rounded-xl border border-gray-100 bg-gray-50 focus:ring-2 focus:ring-accent outline-none text-center"
               required
@@ -57,10 +46,9 @@ export default function AdminLogin() {
 
           <button
             type="submit"
-            disabled={loading}
-            className="w-full py-3 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold shadow-lg shadow-orange-500/20 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50"
+            className="w-full py-3 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold shadow-lg shadow-orange-500/20 hover:scale-[1.02] active:scale-95 transition-all"
           >
-            {loading ? 'Connexion...' : 'Se connecter'}
+            Se connecter
           </button>
         </form>
       </div>
